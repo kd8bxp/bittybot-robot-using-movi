@@ -149,7 +149,7 @@ void distance() {
   uS = sonar.ping();
   sI = (uS / US_ROUNDTRIP_IN);
 
-  if (goRobotGo == 1) {
+  if (goRobotGo == 1 && bot.IsRunning()) {
   if (sI >= 30) {
     objectFlag = 0;
     setSpeed(speedpercent);
