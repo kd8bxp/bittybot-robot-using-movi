@@ -207,6 +207,7 @@ void voltage() {
 }
 
 void readTemperature() {
+  int chk = DHT.read11(DHT11_PIN);
   humidity = DHT.humidity;
   temperature=DHT.temperature; //Celius reading
   
