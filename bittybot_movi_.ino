@@ -47,7 +47,7 @@ void voltage();
 void readTemperature();
 TimedAction pingAction = TimedAction(50, distance);
 TimedAction voltAction = TimedAction(100, voltage);
-TimedAction temperatureAction = timedAction(150, readTemperature);
+TimedAction temperatureAction = TimedAction(150, readTemperature);
 //DHT11 variables and setup
 dht DHT;
 #define DHT11_PIN A9
