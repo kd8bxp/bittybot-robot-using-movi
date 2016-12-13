@@ -63,7 +63,7 @@ void setup () {
   recognizer.addSentence(F("medium"));
   recognizer.addSentence(F("fast"));
 	recognizer.train();
- recognizer.setThreshold(40);
+ recognizer.setThreshold(20);
   setSpeed(speedpercent); //set speed 
   pinMode(voltInput, INPUT);
   recognizer.say("BittyBot Ready. ");
@@ -184,7 +184,9 @@ void voltage() {
   value = analogRead(voltInput);
    vout = (value * 5.0) / 1024.0; // see text
    vin = vout / (R2/(R1+R2)); 
-  vin = 9; //remove this is for testing movi only
+   Serial.print("Voltages");
+   Serial.println(vin);
+  //vin = 9; //remove this is for testing movi only
    if (vin < 7.0) {
      goRobotGo = 0;
      bot.stop();
@@ -195,7 +197,7 @@ void voltage() {
 }
 
 void movement() {
-  setSpeed(speedpercent);
+  /*setSpeed(speedpercent);
   switch(goRobotGo) {
       case 0:
         bot.stop();
@@ -216,6 +218,7 @@ void movement() {
         bot.stop(); //fail to stop
         break;       
   }
+  */
 }
 
 void speakStatus() {
