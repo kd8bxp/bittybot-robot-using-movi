@@ -2,6 +2,7 @@
 #include "BittyBot2.h"
 #include <NewPing.h>
 #include <TimedAction.h>
+#include <dht.h>
 
 #ifdef ARDUINO_ARCH_AVR 
 #include <SoftwareSerial.h> // This is nice and flexible but only supported on AVR architecture, other boards need to use Serial1 
@@ -43,8 +44,15 @@ int value = 0;
 NewPing sonar(TRIGGER_PIN, ECHO_PIN, MAX_DISTANCE);
 void distance();
 void voltage();
-TimedAction pingAction = TimedAction(10, distance);
+void readTemperature();
+TimedAction pingAction = TimedAction(50, distance);
 TimedAction voltAction = TimedAction(100, voltage);
+TimedAction temperatureAction = timedAction(150, readTemperature);
+//DHT11 variables and setup
+dht DHT;
+#define DHT11_PIN A9
+int humidity;
+int temperature;
 
 void setup () {
 	Serial.begin(9600);
@@ -73,6 +81,7 @@ void loop() {
 		
 	voltAction.check();
  pingAction.check(); 
+ temperatureAction.check();
  movement();
 
 //check for speech and speech logic
@@ -133,6 +142,7 @@ void loop() {
   
 		pingAction.check();	
 		voltAction.check();
+   temperatureAction.check();
 		bot.update();
 			}
 	
@@ -196,6 +206,12 @@ void voltage() {
    }
 }
 
+void readTemperature() {
+  humidity = DHT.humidity;
+  temperature=DHT.temperature; //Celius reading
+  
+}
+
 void movement() {
   /*setSpeed(speedpercent);
   switch(goRobotGo) {
@@ -243,6 +259,7 @@ void speakStatus() {
   }
   pingAction.check();  
     voltAction.check();
+    temperatureAction.check();
     bot.update();
   recognizer.say("My motors are set to ");
   if (speedpercent == 0) {recognizer.say("slow speed.");}
@@ -250,24 +267,35 @@ void speakStatus() {
   if (speedpercent == 100) {recognizer.say("fast speed.");}
   pingAction.check();  
     voltAction.check();
+    temperatureAction.check();
     bot.update();
   recognizer.say("Current distance to object ");
   recognizer.say(String(sI));
   recognizer.say("inches.");
   pingAction.check();  
     voltAction.check();
+    temperatureAction.check();
     bot.update();
   recognizer.say("Current temperature is");
- // recognizer.say(temperature);
+  recognizer.say(String(temperature));
   recognizer.say("fahrenheit.");
   pingAction.check();  
     voltAction.check();
+    temperatureAction.check();
+    bot.update();
+    recognizer.say("Current humidity is ");
+    recognizer.say(String(humidity));
+    recognizer.say("percent.");
+    pingAction.check();  
+    voltAction.check();
+    temperatureAction.check();
     bot.update();
   recognizer.say("Battery voltage is");
   recognizer.say(String(vin));
   recognizer.say("volts.");
   pingAction.check();  
     voltAction.check();
+    temperatureAction.check();
     bot.update();
 }
 
