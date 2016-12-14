@@ -1,3 +1,24 @@
+/* Copyright 2015 - LeRoy F. Miller, kd8bxp
+ *  This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses>
+
+    Portitions of this code inspired by or based on
+   https://arduino-info.wikispaces.com/DHT11-Humidity-TempSensor
+   and
+   http://henrysbench.capnfatz.com/henrys-bench/arduino-voltage-measurements/arduino-25v-voltage-sensor-module-user-manual/
+   As well as the MOVI examples included in the MOVI library.
+ */
+
 #include "MOVIShield.h"
 #include "BittyBot2.h"
 #include <NewPing.h>
