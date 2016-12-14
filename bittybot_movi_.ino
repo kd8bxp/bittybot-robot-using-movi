@@ -42,44 +42,62 @@ float R2 = 7500.0; //
 int value = 0;
 
 NewPing sonar(TRIGGER_PIN, ECHO_PIN, MAX_DISTANCE);
+
 void distance();
 void voltage();
 void readTemperature();
+void adjustThreshold();
 TimedAction pingAction = TimedAction(50, distance);
 TimedAction voltAction = TimedAction(100, voltage);
 TimedAction temperatureAction = TimedAction(150, readTemperature);
+TimedAction thresholdAction = TimedAction(100, adjustThreshold)
+
 //DHT11 variables and setup
 dht DHT;
 #define DHT11_PIN A9
+#define fahrenheit 1 //set to zero for Celsius
 int humidity;
 int temperature;
 
+//Movi Threshold variables
+#define defaultThreshold 3;
+#define switchS1 8; //minus 1
+#define switchS2 9; //plus 1
+#define switchS3 10; //minus 10
+#define switchS4 11; //plus 10
+int threshold = defaultThreshold;
+
 void setup () {
 	Serial.begin(9600);
+ pinMode(switchS1, INPUT);
+ pinMode(switchS2, INPUT);
+ pinMode(switchS3, INPUT);
+ pinMode(switchS4, INPUT);
 	bot.begin();
   recognizer.init();
   recognizer.callSign("bittybot");
-	recognizer.addSentence(F("STOP"));
-  recognizer.addSentence(F("fore"));
-  recognizer.addSentence(F("front"));
+	recognizer.addSentence(F("stop"));
+  recognizer.addSentence(F("forward"));
+  recognizer.addSentence(F("go")); //may need to change sounds too much like SLOW
   recognizer.addSentence(F("back"));
   recognizer.addSentence(F("reverse"));
   recognizer.addSentence(F("left"));
   recognizer.addSentence(F("right"));
   recognizer.addSentence(F("status"));
-  recognizer.addSentence(F("slow"));
+  recognizer.addSentence(F("slow")); //may need to change sounds too much like GO
   recognizer.addSentence(F("medium"));
   recognizer.addSentence(F("fast"));
 	recognizer.train();
- recognizer.setThreshold(20);
+ recognizer.setThreshold(threshold);
   setSpeed(speedpercent); //set speed 
   pinMode(voltInput, INPUT);
   recognizer.say("BittyBot Ready. ");
 }
 
 void loop() {
-		
-	voltAction.check();
+
+ thresholdAction.check();
+ voltAction.check();
  pingAction.check(); 
  temperatureAction.check();
  movement();
@@ -138,14 +156,16 @@ void loop() {
     recognizer.say("Speed set to fast.");
   }
   
-	if (bot.IsRunning()) {
-  
+	/*if (bot.IsRunning()) {
+
+    thresholdAction.check();
 		pingAction.check();	
 		voltAction.check();
    temperatureAction.check();
 		bot.update();
 			}
-	
+	*/
+  
 }
 
 int setSpeed(int speed) {
@@ -210,7 +230,7 @@ void readTemperature() {
   int chk = DHT.read11(DHT11_PIN);
   humidity = DHT.humidity;
   temperature=DHT.temperature; //Celius reading
-  
+  if (fahrenheit) {temperature = ((temperature * 9)/5)-32;}
 }
 
 void movement() {
@@ -258,6 +278,7 @@ void speakStatus() {
   } else {
     recognizer.say("Stopped.");
   }
+  thresholdAction.check();
   pingAction.check();  
     voltAction.check();
     temperatureAction.check();
@@ -266,6 +287,7 @@ void speakStatus() {
   if (speedpercent == 0) {recognizer.say("slow speed.");}
   if (speedpercent == 50) {recognizer.say("medium speed.");}
   if (speedpercent == 100) {recognizer.say("fast speed.");}
+  thresholdAction.check();
   pingAction.check();  
     voltAction.check();
     temperatureAction.check();
@@ -273,20 +295,25 @@ void speakStatus() {
   recognizer.say("Current distance to object ");
   recognizer.say(String(sI));
   recognizer.say("inches.");
-  pingAction.check();  
+  pingAction.check();
+  thresholdAction.check();  
     voltAction.check();
     temperatureAction.check();
     bot.update();
   recognizer.say("Current temperature is");
   recognizer.say(String(temperature));
-  recognizer.say("fahrenheit.");
-  pingAction.check();  
+    if (fahrenheit) {
+  recognizer.say("fahrenheit."); } else {
+    recognizer.say("celsius.");  }
+  pingAction.check();
+  thresholdAction.check();  
     voltAction.check();
     temperatureAction.check();
     bot.update();
     recognizer.say("Current humidity is ");
     recognizer.say(String(humidity));
     recognizer.say("percent.");
+    thresholdAction.check();
     pingAction.check();  
     voltAction.check();
     temperatureAction.check();
@@ -294,9 +321,48 @@ void speakStatus() {
   recognizer.say("Battery voltage is");
   recognizer.say(String(vin));
   recognizer.say("volts.");
+  thresholdAction.check();
   pingAction.check();  
     voltAction.check();
     temperatureAction.check();
     bot.update();
 }
+
+void adjustThreshold() {
+
+if (digitalRead(switchS1)) {
+  threshold = threshold - 1;
+    if (threshold < defaultThreshold) {
+      threshold = defaultThreshold;
+      }
+      recognizer.say("Threshold minus one, threshold set to");
+      recognizer.say(String(threshold));
+  }
+if (digitalRead(switchS2)) {
+  threshold = threshold + 1;
+    if (threshold > 95) {
+      threshold = 95;
+    }
+  recognizer.say("Threshold plus one, threshold set to");
+      recognizer.say(String(threshold));
+  }
+if (digitalRead(switchS3)) {
+  threshold = threshold - 10;
+    if (threshold < defaultThreshold) {
+      threshold = defaultThreshold;
+    }
+    recognizer.say("Threshold minus ten, threshold set to");
+      recognizer.say(String(threshold));
+  }
+if (digitalRead(switchS4)) {
+  threshold = threshold + 10;
+    if (threshold > 95) {
+      threshold = 95;
+    }
+    recognizer.say("Threshold plus ten, threshold set to");
+      recognizer.say(String(threshold));
+  }
+  
+}
+
 
