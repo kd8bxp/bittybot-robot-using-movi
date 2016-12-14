@@ -50,7 +50,7 @@ void adjustThreshold();
 TimedAction pingAction = TimedAction(50, distance);
 TimedAction voltAction = TimedAction(100, voltage);
 TimedAction temperatureAction = TimedAction(150, readTemperature);
-TimedAction thresholdAction = TimedAction(100, adjustThreshold)
+TimedAction thresholdAction = TimedAction(100, adjustThreshold);
 
 //DHT11 variables and setup
 dht DHT;
@@ -60,11 +60,11 @@ int humidity;
 int temperature;
 
 //Movi Threshold variables
-#define defaultThreshold 3;
-#define switchS1 8; //minus 1
-#define switchS2 9; //plus 1
-#define switchS3 10; //minus 10
-#define switchS4 11; //plus 10
+#define defaultThreshold 3 //73
+#define switchS1 47 //minus 1
+#define switchS2 45 //plus 1
+#define switchS3 43 //minus 10
+#define switchS4 41 //plus 10
 int threshold = defaultThreshold;
 
 void setup () {
@@ -230,7 +230,10 @@ void readTemperature() {
   int chk = DHT.read11(DHT11_PIN);
   humidity = DHT.humidity;
   temperature=DHT.temperature; //Celius reading
-  if (fahrenheit) {temperature = ((temperature * 9)/5)-32;}
+  Serial.print(temperature);
+  Serial.println("C");
+  if (fahrenheit) {temperature = ((temperature * 9)/5)+32;
+  Serial.print(temperature); Serial.println("F");}
 }
 
 void movement() {
@@ -330,7 +333,7 @@ void speakStatus() {
 
 void adjustThreshold() {
 
-if (digitalRead(switchS1)) {
+if (digitalRead(switchS1) == LOW) {
   threshold = threshold - 1;
     if (threshold < defaultThreshold) {
       threshold = defaultThreshold;
@@ -338,7 +341,7 @@ if (digitalRead(switchS1)) {
       recognizer.say("Threshold minus one, threshold set to");
       recognizer.say(String(threshold));
   }
-if (digitalRead(switchS2)) {
+if (digitalRead(switchS2) == LOW) {
   threshold = threshold + 1;
     if (threshold > 95) {
       threshold = 95;
@@ -346,7 +349,7 @@ if (digitalRead(switchS2)) {
   recognizer.say("Threshold plus one, threshold set to");
       recognizer.say(String(threshold));
   }
-if (digitalRead(switchS3)) {
+if (digitalRead(switchS3) == LOW) {
   threshold = threshold - 10;
     if (threshold < defaultThreshold) {
       threshold = defaultThreshold;
@@ -354,7 +357,7 @@ if (digitalRead(switchS3)) {
     recognizer.say("Threshold minus ten, threshold set to");
       recognizer.say(String(threshold));
   }
-if (digitalRead(switchS4)) {
+if (digitalRead(switchS4) == LOW) {
   threshold = threshold + 10;
     if (threshold > 95) {
       threshold = 95;
