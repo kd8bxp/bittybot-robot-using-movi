@@ -5,6 +5,11 @@ http://www.audeme.com/MOVI
 Original Bitty Bot Code can be found in the Automation Technology Club repository.
 https://github.com/automation-technology-club/Bitty_Bot
 
+## Libraries
+
+Uses Adafruit Neopixel (version 1.3.5), and SoftwareSerial libraries (unknown version).  
+Because the Arduino IDE has been getting pretty bad handling libraries, I've included the libraries used in the src directory of the sketch. These libraries may have been slightly modified to work from the sketch directory, and do not include the examples.  
+
 ## Installation
 
 Bittybot is a 2 wheeled tail dragger robot, using a Arduino Mega 2560. The basic motor hook up is pictured in the directory.  A ultrasonic, DHT11 Temperature sensor, and voltage sensor where added, and are documented in the code. 

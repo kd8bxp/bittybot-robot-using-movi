@@ -19,11 +19,11 @@
    As well as the MOVI examples included in the MOVI library.
  */
 
-#include "MOVIShield.h"
-#include "BittyBot2.h"
-#include <NewPing.h>
-#include <TimedAction.h>
-#include <dht.h>
+#include "src/MOVI/MOVIShield.h"
+#include "src/BittyBot2/BittyBot2.h"
+#include "src/NewPing/NewPing.h"
+#include "src/TimedAction/TimedAction.h"
+#include "src/DHTlib/dht.h"
 
 #ifdef ARDUINO_ARCH_AVR 
 #include <SoftwareSerial.h> // This is nice and flexible but only supported on AVR architecture, other boards need to use Serial1 
@@ -388,5 +388,3 @@ if (digitalRead(switchS4) == LOW) {
   }
   
 }
-
-
